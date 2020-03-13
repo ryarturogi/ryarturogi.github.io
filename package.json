@@ -1,0 +1,25 @@
+{
+  "name": "ryarturogi.github.io",
+  "version": "1.0.0",
+  "description": "my personal portfolio",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryarturogi/ryarturogi.github.io.git"
+  },
+  "keywords": [
+    "portfolio",
+    "personal",
+    "website",
+    "Resumen"
+  ],
+  "author": "Ricardo Guillen I.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryarturogi/ryarturogi.github.io/issues"
+  },
+  "homepage": "https://github.com/ryarturogi/ryarturogi.github.io#readme"
+}
