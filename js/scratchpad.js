@@ -410,7 +410,7 @@ $(function() {
       editor.setReadOnly(true);
       editor.setValue(dataSnapshot.child('code').val());
       clearReadOnlyMode = setTimeout(function() {
-        editor.setReadOnly(false);
+        editor.setReadOnly(true);
       }, 2000);
     }
 
