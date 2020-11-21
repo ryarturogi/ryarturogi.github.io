@@ -407,11 +407,11 @@ $(function() {
       // do nothing, we're the ones typing in the first place
     } else {
       window.clearTimeout(clearReadOnlyMode);
-      editor.setReadOnly(true);
+      // editor.setReadOnly(true);
       editor.setValue(dataSnapshot.child('code').val());
-      clearReadOnlyMode = setTimeout(function() {
-        editor.setReadOnly(true);
-      }, 2000);
+      // clearReadOnlyMode = setTimeout(function() {
+        // editor.setReadOnly(true);
+      // }, 2000);
     }
 
     // Clear selection and move cursor to where it needs to be
@@ -433,12 +433,12 @@ $(function() {
     var endcolumn = editor.selection.getRange().end.column;
 
     // If nothing is highlighted, ship contents of editor and cursor data to Firebase
-    if (startrow == endrow && startcolumn == endcolumn) {
-      scratchpadEditorRef.set({
-        code: editor.getValue(),
-        cursor: editor.selection.getCursor()
-      });
-    }
+    // if (startrow == endrow && startcolumn == endcolumn) {
+    //   scratchpadEditorRef.set({
+    //     code: editor.getValue(),
+    //     cursor: editor.selection.getCursor()
+    //   });
+    // }
 
     // Set a timeout for 2 seconds that tells firebase who is typing
     typingTimeout = setTimeout(function() {
