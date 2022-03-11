@@ -7,27 +7,29 @@ $(function() {
     {
       "name": 'Ricardo Guillen I.',
       "jobTitle": 'Front-End Developer',
-      "motto": 'I'm a Front-End Developer',
+      "motto": 'Coffee, Code, Sleep, Repeat',
       "skills": [
         "Web_Development": {
           "Javascript": [
             "ES6",
-            "Vue JS", 
-            "Nuxt JS", 
-            "Node JS"
-          ],
-          "CMS": [
-            "wordpress"
+            "VueJs", 
+            "NuxtJs", 
+            "ReactJs",
+            "NextJs",
+            "NodeJs"
           ],
           "Database": [
-            "MongoDB"
+            "MongoDB",
+            "MySQL",
+            "Postgresql"
           ]
         },
         "Web_Design": [
-          "Bootstrap",
+          "TailwindCSS",
           "Javascript",
           "HTML5",
-          "CSS",
+          "CSS3",
+          "Figma",
           "Adobe XD"
         ]
       ]
@@ -79,14 +81,14 @@ $(function() {
           <b>Web Development</b>
         </h3>
         <p>
-          JavaScript: ES6, Vue JS, Nuxt JS, Node JS, CMS: WordPress, DB: MongoDB
+          JavaScript: ES6, VueJs, NuxJs, ReactJs, NextJS, NodeJs, DB: MongoDB, MySQL, Postgresql
         </p> <br />
 
         <h3>
           <b>Website Design</b>
         </h3>
         <p>
-          Bootstrap, JavaScript, HTML5, CSS, Adobe XD
+          TailwindCSS, JavaScript, HTML5, CSS, Figma, Adobe XD
         </p>
       </hgroup>
     </section>
