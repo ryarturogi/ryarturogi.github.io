@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
   // Scratchpad Intro
   //--------------------------------------------------------------------------------
   var intro = [
@@ -181,6 +181,9 @@ $(function() {
     max-width: 100%;
     margin: 0;
     display: block;
+    height: 320px;
+    object-fit: cover;
+    object-position: bottom;
   }
 
   /*  
@@ -296,137 +299,137 @@ $(function() {
     font-size: 1.35rem;
   }
 </style>
-    `
-  ].join('\n');
+    `,
+  ].join("\n");
 
   // Ace code editor
   //--------------------------------------------------------------------------------
-  var editor = ace.edit('editor');
-  editor.setTheme('ace/theme/cobalt');
-  editor.getSession().setMode('ace/mode/html');
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/cobalt");
+  editor.getSession().setMode("ace/mode/html");
   editor.setHighlightActiveLine(false);
   editor.getSession().setTabSize(2);
   editor.setOptions({
-    fontFamily: 'Fira Code',
-    fontSize: '12px',
+    fontFamily: "Fira Code",
+    fontSize: "12px",
     displayIndentGuides: false,
     showGutter: false,
-    readOnly: false
+    readOnly: false,
   });
-  editor.commands.removeCommand('gotoline');
+  editor.commands.removeCommand("gotoline");
   editor.setShowPrintMargin(false);
   editor.commands.addCommand({
-    name: 'showHelp',
-    bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
-    exec: function(editor) {
-      $('#help').toggleClass('visible');
-    }
+    name: "showHelp",
+    bindKey: { win: "Ctrl-/", mac: "Command-/" },
+    exec: function (editor) {
+      $("#help").toggleClass("visible");
+    },
   });
   editor.commands.addCommand({
-    name: 'toggleFullscreen',
-    bindKey: { win: 'Ctrl-i', mac: 'Command-i' },
-    exec: function(editor) {
+    name: "toggleFullscreen",
+    bindKey: { win: "Ctrl-i", mac: "Command-i" },
+    exec: function (editor) {
       toggleFullscreen();
-    }
+    },
   });
 
   // Set up iframe.
-  var iframe = document.getElementById('preview'),
+  var iframe = document.getElementById("preview"),
     iframedoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframedoc.body.setAttribute('tabindex', 0);
+  iframedoc.body.setAttribute("tabindex", 0);
 
   // Base firebase ref
   //--------------------------------------------------------------------------------
   var scratchpadRef = new Firebase(
-    'https://rys-portfolio.firebaseio.com/' + Scratchpad.document_id
+    "https://rys-portfolio.firebaseio.com/" + Scratchpad.document_id
   );
   var now = new Date();
-  scratchpadRef.child('updatedAt').set(now.toString());
+  scratchpadRef.child("updatedAt").set(now.toString());
 
   // Multiple client stuff
   //--------------------------------------------------------------------------------
 
   // Push a new child to clients that kills itself on disconnect
-  var thisClientRef = scratchpadRef.child('clients').push('idle');
+  var thisClientRef = scratchpadRef.child("clients").push("idle");
   thisClientRef.onDisconnect().remove();
 
   // Keep track of the number of active connections
-  scratchpadRef.child('clients').on('value', function(dataSnapshot) {
+  scratchpadRef.child("clients").on("value", function (dataSnapshot) {
     if (dataSnapshot.val() === null) {
-      scratchpadRef.child('clients').set({});
+      scratchpadRef.child("clients").set({});
     } else {
       var numClients = dataSnapshot.numChildren();
 
       // Label the tooltip appropriately
-      $('#connections-tooltip').remove();
+      $("#connections-tooltip").remove();
       if (numClients === 2) {
-        $('#connections').after(
+        $("#connections").after(
           '<span id="connections-tooltip"> 1 other viewer</span>'
         );
       } else if (numClients === 1) {
         // do nothing
       } else {
-        $('#connections').after(
+        $("#connections").after(
           '<span id="connections-tooltip"> ' +
             (numClients - 1) +
-            ' other viewers</span>'
+            " other viewers</span>"
         );
       }
 
       // Append proper number of dots
-      $('#connections').html('');
+      $("#connections").html("");
       for (i = 1; i < dataSnapshot.numChildren(); i++) {
-        $('#connections').append('<li>&nbsp;</li>');
+        $("#connections").append("<li>&nbsp;</li>");
       }
     }
   });
 
-  $('#connections').hover(
-    function() {
-      $('#connections-tooltip').css('opacity', 1);
+  $("#connections").hover(
+    function () {
+      $("#connections-tooltip").css("opacity", 1);
     },
-    function() {
-      $('#connections-tooltip').css('opacity', 0);
+    function () {
+      $("#connections-tooltip").css("opacity", 0);
     }
   );
 
   // Code Editing
   //--------------------------------------------------------------------------------
-  var scratchpadEditorRef = scratchpadRef.child('editor');
+  var scratchpadEditorRef = scratchpadRef.child("editor");
 
   // When code changes, put it into the editor
-  scratchpadEditorRef.on('value', function(dataSnapshot) {
+  scratchpadEditorRef.on("value", function (dataSnapshot) {
     var thisClientStatus;
-    thisClientRef.once('value', function(dataSnapshot) {
+    thisClientRef.once("value", function (dataSnapshot) {
       thisClientStatus = dataSnapshot.val();
     });
 
     // If this is a new scratchpad, put in our intro
     var clearReadOnlyMode;
-    if (dataSnapshot.child('code').val() == null) {
+    if (dataSnapshot.child("code").val() == null) {
       editor.setValue(intro);
-    } else if (thisClientStatus == 'typing') {
+    } else if (thisClientStatus == "typing") {
       // do nothing, we're the ones typing in the first place
     } else {
       window.clearTimeout(clearReadOnlyMode);
       // editor.setReadOnly(true);
-      editor.setValue(dataSnapshot.child('code').val());
+      editor.setValue(dataSnapshot.child("code").val());
       // clearReadOnlyMode = setTimeout(function() {
-        // editor.setReadOnly(true);
+      // editor.setReadOnly(true);
       // }, 2000);
     }
 
     // Clear selection and move cursor to where it needs to be
     editor.clearSelection();
-    editor.moveCursorToPosition(dataSnapshot.child('cursor').val());
+    editor.moveCursorToPosition(dataSnapshot.child("cursor").val());
   });
 
   // On keyup, save the code and cursor data to firebase
   var typingTimeout;
-  $('#editor').on('keyup', function() {
+  $("#editor").on("keyup", function () {
     // Tell firebase who is editing
     window.clearTimeout(typingTimeout);
-    thisClientRef.set('typing');
+    thisClientRef.set("typing");
 
     // Get cursor position
     var startrow = editor.selection.getRange().start.row;
@@ -443,24 +446,24 @@ $(function() {
     // }
 
     // Set a timeout for 2 seconds that tells firebase who is typing
-    typingTimeout = setTimeout(function() {
-      thisClientRef.set('idle');
+    typingTimeout = setTimeout(function () {
+      thisClientRef.set("idle");
     }, 2000);
   });
 
   // On data change, re-render the code in the iframe.
-  editor.getSession().on('change', function(e) {
+  editor.getSession().on("change", function (e) {
     iframedoc.body.innerHTML = editor.getValue();
     // Resize the menu icon if appropriate
     var linesOfCode = editor.session.getLength();
     if (linesOfCode < 10) {
-      $('#menu').attr('class', 'small');
+      $("#menu").attr("class", "small");
     } else if (linesOfCode > 9 && linesOfCode < 99) {
-      $('#menu').attr('class', 'medium');
+      $("#menu").attr("class", "medium");
     } else if (linesOfCode > 99 && linesOfCode < 999) {
-      $('#menu').attr('class', 'large');
+      $("#menu").attr("class", "large");
     } else if (linesOfCode > 999) {
-      $('#menu').attr('class', 'x-large');
+      $("#menu").attr("class", "x-large");
     }
   });
 
@@ -538,67 +541,65 @@ $(function() {
 
   // History (Recent Scratchpads)
   // --------------------------------------------------------------------------------
-  if (typeof Storage !== 'undefined') {
+  if (typeof Storage !== "undefined") {
     // Initialize recentScratchpads row in localStorage if needed
-    if (localStorage['recentScratchpads'] === undefined) {
-      localStorage['recentScratchpads'] = JSON.stringify([]);
+    if (localStorage["recentScratchpads"] === undefined) {
+      localStorage["recentScratchpads"] = JSON.stringify([]);
     }
 
     function getRecentScratchpads() {
-      var scratchpadIds = JSON.parse(localStorage['recentScratchpads']);
+      var scratchpadIds = JSON.parse(localStorage["recentScratchpads"]);
       return scratchpadIds;
     }
 
     function addToRecentScratchpads(id) {
       var recentScratchpadsArr = [];
       recentScratchpadsArr =
-        JSON.parse(localStorage['recentScratchpads']) || [];
+        JSON.parse(localStorage["recentScratchpads"]) || [];
       if (!_.contains(recentScratchpadsArr, id)) {
         recentScratchpadsArr.push(id);
-        localStorage['recentScratchpads'] = JSON.stringify(
-          recentScratchpadsArr
-        );
+        localStorage["recentScratchpads"] =
+          JSON.stringify(recentScratchpadsArr);
       } else {
         recentScratchpadsArr = _.without(recentScratchpadsArr, id);
         recentScratchpadsArr.push(id);
-        localStorage['recentScratchpads'] = JSON.stringify(
-          recentScratchpadsArr
-        );
+        localStorage["recentScratchpads"] =
+          JSON.stringify(recentScratchpadsArr);
       }
     }
 
     function renderRecentScratchpads(listOfRecentScratchpads) {
       if (listOfRecentScratchpads.length > 1) {
         // Clear the loading text, save state that it's been loaded
-        $('#recent-scratchpads').html('');
+        $("#recent-scratchpads").html("");
         var recentScratchpadTemplate =
           '<li><a class="recent-scratchpad" href="/<%= scratchpadId %>" target="_blank"><%= thisScratchpadTitle %> <time><%= dateTemplate %></time></a><a class="delete" data-id="<%= scratchpadId %>" href="javascript:void(0)">&times;</a></li>';
 
-        _.each(listOfRecentScratchpads, function(scratchpadId) {
+        _.each(listOfRecentScratchpads, function (scratchpadId) {
           if (Scratchpad.document_id != scratchpadId) {
             var thisScratchpadRef = new Firebase(
-              'https://rys-portfolio.firebaseio.com/' + scratchpadId
+              "https://rys-portfolio.firebaseio.com/" + scratchpadId
             );
-            thisScratchpadRef.once('value', function(dataSnapshot) {
-              var thisScratchpadTitle = dataSnapshot.child('title').val();
-              dateObj = new Date(dataSnapshot.child('updatedAt').val());
+            thisScratchpadRef.once("value", function (dataSnapshot) {
+              var thisScratchpadTitle = dataSnapshot.child("title").val();
+              dateObj = new Date(dataSnapshot.child("updatedAt").val());
               dateTemplate =
                 dateObj.getDate() +
-                '/' +
+                "/" +
                 dateObj.getMonth() +
-                '/' +
+                "/" +
                 dateObj.getFullYear();
               thisScratchpadTemplate = _.template(recentScratchpadTemplate, {
                 scratchpadId: scratchpadId,
                 thisScratchpadTitle: thisScratchpadTitle,
-                dateTemplate: dateTemplate
+                dateTemplate: dateTemplate,
               });
-              $('#recent-scratchpads').prepend(thisScratchpadTemplate);
+              $("#recent-scratchpads").prepend(thisScratchpadTemplate);
             });
           }
         });
       } else {
-        $('#recent-scratchpads').html('<li>No recent scratchpads!</li>');
+        $("#recent-scratchpads").html("<li>No recent scratchpads!</li>");
       }
       Scratchpad.loadedRecentScratchpads = true;
     }
@@ -606,30 +607,26 @@ $(function() {
     function deleteRecentScratchpadFromList(id) {
       // Delete from localstore
       var recentScratchpadsArr;
-      recentScratchpadsArr = JSON.parse(localStorage['recentScratchpads']);
+      recentScratchpadsArr = JSON.parse(localStorage["recentScratchpads"]);
       recentScratchpadsArr = _.without(recentScratchpadsArr, id);
-      localStorage['recentScratchpads'] = JSON.stringify(recentScratchpadsArr);
+      localStorage["recentScratchpads"] = JSON.stringify(recentScratchpadsArr);
 
       // Delete from DOM
-      $('#recent-scratchpads li').each(function(index) {
-        if (
-          $(this)
-            .children('.delete')
-            .data('id') == id
-        ) {
+      $("#recent-scratchpads li").each(function (index) {
+        if ($(this).children(".delete").data("id") == id) {
           $(this).remove();
         }
       });
     }
 
-    $('#recent-scratchpads').on('click', '.delete', function(e) {
-      deleteRecentScratchpadFromList($(this).data('id'));
+    $("#recent-scratchpads").on("click", ".delete", function (e) {
+      deleteRecentScratchpadFromList($(this).data("id"));
     });
 
     addToRecentScratchpads(Scratchpad.document_id);
   } else {
     // Sorry! No web storage support.
-    $('#recent-scratchpads').html(
+    $("#recent-scratchpads").html(
       "Sorry! Your browser doesn't support HTML5 local storage."
     );
   }
@@ -638,28 +635,27 @@ $(function() {
   // --------------------------------------------------------------------------------
 
   // Toggle fullscreen mode on menu click
-  $('#menu').click(function() {
-    $('#scratchpad').toggleClass('menu');
-    mixpanel.track('Menu toggle');
+  $("#menu").click(function () {
+    $("#scratchpad").toggleClass("menu");
+    mixpanel.track("Menu toggle");
     if (Scratchpad.loadedRecentScratchpads != true) {
       renderRecentScratchpads(getRecentScratchpads());
     }
   });
 
   // Show different tooltip for Windows users.
-  var isMac = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
+  var isMac = navigator.platform.toUpperCase().indexOf("MAC") !== -1;
   if (isMac != true) {
-    $('.tooltip').html('Keyboard Shortcut: Control + i');
+    $(".tooltip").html("Keyboard Shortcut: Control + i");
   }
 });
-
 
 // Show/Hide button code editor mobile
 // --------------------------------------------------------------------------------
 
-const showPreview = document.querySelector('.hide-show-toggle');
-  const hidePreview = document.querySelector('.hidden');
+const showPreview = document.querySelector(".hide-show-toggle");
+const hidePreview = document.querySelector(".hidden");
 
-  showPreview.onclick = function changeContent() {
-    hidePreview.classList.toggle('visible');
-  };
+showPreview.onclick = function changeContent() {
+  hidePreview.classList.toggle("visible");
+};
