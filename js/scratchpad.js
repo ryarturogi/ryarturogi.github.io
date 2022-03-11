@@ -50,7 +50,7 @@ $(function() {
       <h1 class="title">Ricardo Guillen I.</h1>
 
       <!-- Job Title -->
-      <h2 class="subtitle">Front-End Developer at Contrata.com.do</h2>
+      <h2 class="subtitle">Lead Front-End Developer at Elaniin</h2>
 
       <!-- Social Networks -->
       <div class="networks">
