@@ -299,7 +299,7 @@ $(function () {
     font-size: 1.35rem;
   }
 </style>
-    `,
+    `
   ].join("\n");
 
   // Ace code editor
