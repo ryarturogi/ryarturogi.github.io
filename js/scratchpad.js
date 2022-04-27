@@ -74,7 +74,7 @@ $(function () {
     <section class="skills">
       <hgroup>
         <h2>
-          <strong>Skills 2020⚡</strong>
+          <strong>Skills ${new Date().getFullYear()}⚡</strong>
         </h2>
 
         <h3>
