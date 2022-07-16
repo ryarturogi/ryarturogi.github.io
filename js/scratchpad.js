@@ -166,7 +166,8 @@ body {
   justify-items: center;
   border-radius: 8px;
   overflow: hidden;
-  background: var(--white-color);
+  background: #f2f2f2;
+  padding: 1rem 0;
 
 }
 
@@ -275,7 +276,7 @@ body {
   display: block;
   width: 100%;
   max-width: 100%;
-  margin: 1em 0 0;
+  margin: 0;
   padding: .5em .75em .75em;
   background: var(--white-color);
   border: 2px solid var(--blue-color);
