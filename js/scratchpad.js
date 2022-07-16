@@ -343,66 +343,16 @@ $(function () {
   const scratchpadRef = new Firebase(
     "https://rys-portfolio.firebaseio.com/" + Scratchpad.document_id
   );
-  const now = new Date();
-  scratchpadRef.child("updatedAt").set(now.toString());
-
-  // Multiple client stuff
-  //--------------------------------------------------------------------------------
-
-  // Push a new child to clients that kills itself on disconnect
-  const thisClientRef = scratchpadRef.child("clients").push("idle");
-  thisClientRef.onDisconnect().remove();
-
-  // Keep track of the number of active connections
-  scratchpadRef.child("clients").on("value", function (dataSnapshot) {
-    if (dataSnapshot.val() === null) {
-      scratchpadRef.child("clients").set({});
-    } else {
-      const numClients = dataSnapshot.numChildren();
-
-      // Label the tooltip appropriately
-      $("#connections-tooltip").remove();
-      if (numClients === 2) {
-        $("#connections").after(
-          '<span id="connections-tooltip"> 1 other viewer</span>'
-        );
-      } else if (numClients === 1) {
-        // do nothing
-      } else {
-        $("#connections").after(
-          '<span id="connections-tooltip"> ' +
-            (numClients - 1) +
-            " other viewers</span>"
-        );
-      }
-
-      // Append proper number of dots
-      $("#connections").html("");
-      for (i = 1; i < dataSnapshot.numChildren(); i++) {
-        $("#connections").append("<li>&nbsp;</li>");
-      }
-    }
-  });
-
-  $("#connections").hover(
-    function () {
-      $("#connections-tooltip").css("opacity", 1);
-    },
-    function () {
-      $("#connections-tooltip").css("opacity", 0);
-    }
-  );
 
   // Code Editing
   //--------------------------------------------------------------------------------
   const scratchpadEditorRef = scratchpadRef.child("editor");
 
   // When code changes, put it into the editor
-  scratchpadEditorRef.on("value", function (dataSnapshot) {
+  scratchpadEditorRef.on("value", function () {
     editor.setValue(`${intro}`);
     // Clear selection and move cursor to where it needs to be
     editor.clearSelection();
-    editor.moveCursorToPosition(dataSnapshot.child("cursor").val());
   });
 
   // On keyup, save the code and cursor data to firebase
@@ -431,69 +381,6 @@ $(function () {
       $("#menu").attr("class", "large");
     } else if (linesOfCode > 999) {
       $("#menu").attr("class", "x-large");
-    }
-  });
-
-  // History (Recent Scratchpads)
-  // --------------------------------------------------------------------------------
-  if (typeof Storage !== "undefined") {
-    // Initialize recentScratchpads row in localStorage if needed
-    if (localStorage["recentScratchpads"] === undefined) {
-      localStorage["recentScratchpads"] = JSON.stringify([]);
-    }
-
-    function addToRecentScratchpads(id) {
-      let recentScratchpadsArr = [];
-      recentScratchpadsArr =
-        JSON.parse(localStorage["recentScratchpads"]) || [];
-      if (!_.contains(recentScratchpadsArr, id)) {
-        recentScratchpadsArr.push(id);
-        localStorage["recentScratchpads"] =
-          JSON.stringify(recentScratchpadsArr);
-      } else {
-        recentScratchpadsArr = _.without(recentScratchpadsArr, id);
-        recentScratchpadsArr.push(id);
-        localStorage["recentScratchpads"] =
-          JSON.stringify(recentScratchpadsArr);
-      }
-    }
-
-    function deleteRecentScratchpadFromList(id) {
-      // Delete from localstore
-      let recentScratchpadsArr;
-      recentScratchpadsArr = JSON.parse(localStorage["recentScratchpads"]);
-      recentScratchpadsArr = _.without(recentScratchpadsArr, id);
-      localStorage["recentScratchpads"] = JSON.stringify(recentScratchpadsArr);
-
-      // Delete from DOM
-      $("#recent-scratchpads li").each(function () {
-        if ($(this).children(".delete").data("id") == id) {
-          $(this).remove();
-        }
-      });
-    }
-
-    $("#recent-scratchpads").on("click", ".delete", function () {
-      deleteRecentScratchpadFromList($(this).data("id"));
-    });
-
-    addToRecentScratchpads(Scratchpad.document_id);
-  } else {
-    // Sorry! No web storage support.
-    $("#recent-scratchpads").html(
-      "Sorry! Your browser doesn't support HTML5 local storage."
-    );
-  }
-
-  // Menu stuff
-  // --------------------------------------------------------------------------------
-
-  // Toggle fullscreen mode on menu click
-  $("#menu").click(function () {
-    $("#scratchpad").toggleClass("menu");
-    mixpanel.track("Menu toggle");
-    if (!Scratchpad.loadedRecentScratchpads) {
-      renderRecentScratchpads(getRecentScratchpads());
     }
   });
 
