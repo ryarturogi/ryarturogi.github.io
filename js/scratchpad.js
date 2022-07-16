@@ -2,8 +2,8 @@
 //--------------------------------------------------------------------------------
 const intro = [
   `
-  <!-- ::Front-End Developer ::
-  
+  <!-- ::Lead Front-End Developer @ Elaniin::
+
   {
     "name": 'Ricardo Guillen I.',
     "jobTitle": 'Front-End Developer',
@@ -40,7 +40,7 @@ const intro = [
 <div class="wrapper">
 
 <!-- Photo -->
-<img class="avatar" src="./assets/imgs/JPG/logo.jpg" title="Ricardo GI, Front-End Developer" />
+<img class="avatar" src="./assets/imgs/JPG/logo.jpg" title="Ricardo GI, Lead Front-End Developer" />
 
 <div class="content">
 
@@ -50,7 +50,7 @@ const intro = [
     <h1 class="title">Ricardo Guillen I.</h1>
 
     <!-- Job Title -->
-    <h2 class="subtitle">Lead Front-End Developer at Elaniin</h2>
+    <h2 class="subtitle">Lead Front-End Developer at @Elaniin</h2>
 
     <!-- Social Networks -->
     <div class="networks">
@@ -298,7 +298,7 @@ body {
   font-size: 1.35rem;
 }
 </style>
-  `].join("\n");
+  `,].join("\n");
   
 $(function () {
 
@@ -307,12 +307,12 @@ $(function () {
   const editor = ace.edit("editor");
   editor.setTheme("ace/theme/cobalt");
   editor.getSession().setMode("ace/mode/html");
-  editor.setHighlightActiveLine(false);
-  editor.getSession().setTabSize(2);
+  editor.setHighlightActiveLine(true);
+  editor.getSession().setTabSize(1);
   editor.setOptions({
-    fontFamily: "Fira Code",
-    fontSize: "12px",
-    displayIndentGuides: false,
+    fontFamily: "JetBrains Mono, monospace",
+    fontSize: "14px",
+    displayIndentGuides: true,
     showGutter: false,
     readOnly: false,
   });

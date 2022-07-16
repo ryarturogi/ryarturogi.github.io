@@ -124,7 +124,7 @@ a {
     grid-area: interface;
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     grid-template-areas: "editor preview";
     position: relative;
     overflow: hidden;
@@ -613,4 +613,11 @@ a {
     .footer-distributed .footer-center i {
         margin-left: 0;
     }
+}
+
+@font-face{
+    font-family: 'JetBrains Mono';
+    src: url('../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
