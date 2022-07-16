@@ -617,7 +617,7 @@ a {
 
 @font-face{
     font-family: 'JetBrains Mono';
-    src: url('../assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+    src: url('https://ryarturogi.github.io/assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
