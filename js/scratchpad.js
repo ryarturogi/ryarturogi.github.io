@@ -122,6 +122,7 @@ body {
 .wrapper {
   width: 280px;
   height: auto;
+  min-height: 100vh;
   margin: auto;
   padding: 1rem 1.5rem;
   display: flex;
